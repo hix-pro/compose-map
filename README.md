@@ -3,6 +3,7 @@
 **Docker Compose, explained.** Drop in a `docker-compose.yml` and get an interactive service graph plus a plain-English review of the ports, mounts, secrets, and startup ordering that cause production surprises.
 
 [![CI](https://github.com/hix-pro/compose-map/actions/workflows/ci.yml/badge.svg)](https://github.com/hix-pro/compose-map/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/hix-pro/compose-map)](https://github.com/hix-pro/compose-map/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-c6f56e.svg)](LICENSE)
 
 ![ComposeMap showing the deliberate Leaky stack example](docs/screenshot.png)
