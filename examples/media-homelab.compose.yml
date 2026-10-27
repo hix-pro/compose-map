@@ -1,0 +1,49 @@
+name: media-stack
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:10.9.11
+    ports:
+      - "8096:8096"
+    volumes:
+      - ./config/jellyfin:/config
+      - ./media:/media:ro
+    restart: unless-stopped
+
+  sonarr:
+    image: linuxserver/sonarr:4.0.9
+    ports:
+      - "8989:8989"
+    volumes:
+      - ./config/sonarr:/config
+      - ./media:/media
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Paris
+    depends_on:
+      - qbittorrent
+    restart: unless-stopped
+
+  qbittorrent:
+    image: linuxserver/qbittorrent:4.6.7
+    ports:
+      - "6881:6881"
+      - "6881:6881/udp"
+      - "8080:8080"
+    volumes:
+      - ./config/qbittorrent:/config
+      - ./downloads:/downloads
+    environment:
+      WEBUI_PORT: 8080
+      TZ: Europe/Paris
+    restart: unless-stopped
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_SCHEDULE: "0 0 4 * * *"
+    restart: unless-stopped

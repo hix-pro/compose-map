@@ -1,0 +1,49 @@
+name: leaky-demo
+
+# Deliberately unsafe demo fixture.
+services:
+  gateway:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    build: .
+    command: npm run start
+    privileged: true
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://app:sup3r-s3cret@db:5432/app
+      STRIPE_SECRET_KEY: sk_live_51H8example
+      DEBUG: "*"
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./uploads:/app/uploads
+    depends_on:
+      - db
+      - queue
+
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: hunter2-production
+      POSTGRES_DB: app
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  metrics:
+    image: prom/prometheus:v2.54.1
+    ports:
+      - "9090:9090"
+    network_mode: host
+
+volumes:
+  db-data:

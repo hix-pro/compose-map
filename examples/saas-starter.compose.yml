@@ -1,0 +1,63 @@
+name: orbit
+
+services:
+  web:
+    image: ghcr.io/acme/orbit-web:1.8.2
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      DATABASE_URL: postgres://orbit:${POSTGRES_PASSWORD}@db:5432/orbit
+      REDIS_URL: redis://cache:6379
+      SESSION_SECRET: ${SESSION_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/healthz"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  worker:
+    image: ghcr.io/acme/orbit-worker:1.8.2
+    environment:
+      DATABASE_URL: postgres://orbit:${POSTGRES_PASSWORD}@db:5432/orbit
+      REDIS_URL: redis://cache:6379
+    depends_on:
+      - db
+      - cache
+    restart: unless-stopped
+
+  db:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_USER: orbit
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: orbit
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orbit -d orbit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  cache:
+    image: redis:7.4-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - cache-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  cache-data:
