@@ -172,6 +172,21 @@ npm run check        # all of the above
 
 The rule engine and exporters are pure functions with unit tests; the UI only handles state and presentation.
 
+## Related tools
+
+| Tool | What it does |
+| --- | --- |
+| [EnvAudit](https://github.com/hix-pro/env-audit) | find missing, undocumented, and unused environment variables |
+| [Migration Guard](https://github.com/hix-pro/migration-guard) | statically catch dangerous SQL migrations before they run |
+| [API Watch](https://github.com/hix-pro/api-watch) | catch breaking changes in your OpenAPI and JSON contracts |
+| [RepoRace](https://github.com/hix-pro/reporace) | see which GitHub repositories are accelerating |
+| [TypeShift](https://github.com/hix-pro/typeshift) | decide the semver bump from a TypeScript declaration diff |
+| [ActionLens](https://github.com/hix-pro/action-lens) | see what a GitHub Actions workflow really does, before it hits main |
+| [OpenCode Telegram](https://github.com/hix-pro/opencode-telegram) | control a local OpenCode server from Telegram |
+---
+
+_Part of the **[hix tools](https://github.com/hix-pro#readme)** suite — local-first, no backend, CI-ready._
+
 ## License
 
 [MIT](LICENSE) © hix-pro
