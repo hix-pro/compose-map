@@ -28,9 +28,13 @@ export function buildGraph(model: ComposeModel, findings: Finding[]): Graph {
   }
 
   const edges: Edge[] = []
+  const seen = new Set<string>()
   for (const service of model.services) {
     for (const dependency of service.dependsOn) {
       if (!names.has(dependency)) continue
+      const key = `${service.name}->${dependency}`
+      if (seen.has(key)) continue
+      seen.add(key)
       graph.setEdge(service.name, dependency)
       edges.push({
         id: `${service.name}->${dependency}`,

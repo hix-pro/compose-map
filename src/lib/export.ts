@@ -30,7 +30,11 @@ function escapeMarkdown(value: string): string {
 }
 
 function escapeMermaid(value: string): string {
-  return value.replaceAll('"', '#quot;').replaceAll('\n', ' ')
+  return value
+    .replaceAll('"', '#quot;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('\n', ' ')
 }
 
 function truncate(value: string, length: number): string {
@@ -79,11 +83,15 @@ export function toMermaid(model: ComposeModel, findings: Finding[]): string {
     lines.push(`  ${id}["${label}"]:::${tone}`)
   }
 
+  const linked = new Set<string>()
   for (const service of model.services) {
     for (const dependency of service.dependsOn) {
       const source = ids.get(service.name)
       const target = ids.get(dependency)
       if (!source || !target) continue
+      const key = `${source}->${target}`
+      if (linked.has(key)) continue
+      linked.add(key)
       lines.push(`  ${source} -->|needs| ${target}`)
     }
   }
@@ -129,7 +137,7 @@ export function toMarkdown(model: ComposeModel, analysis: Analysis): string {
     if (group.length === 0) continue
     lines.push(`### ${SEVERITY_LABEL[severity]} (${group.length})`, '')
     for (const finding of group) {
-      const scope = finding.service ? ` — \`${finding.service}\`` : ''
+      const scope = finding.service ? ` — \`${escapeMarkdown(finding.service)}\`` : ''
       lines.push(`- **${escapeMarkdown(finding.title)}**${scope}`)
       lines.push(`  - ${escapeMarkdown(finding.detail)}`)
       lines.push(`  - **Fix:** ${escapeMarkdown(finding.fix)}`)

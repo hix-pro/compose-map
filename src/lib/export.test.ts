@@ -73,6 +73,26 @@ describe('exports', () => {
     expect(markdown).not.toContain('| `pipe|name` |')
   })
 
+  it('escapes service names in the findings scope', () => {
+    const { model, analysis } = reportFor(`services:
+  'pipe|name':
+    image: alpine:3.20
+`)
+    const markdown = toMarkdown(model, analysis)
+    expect(markdown).toContain('**No healthcheck** — `pipe\\|name`')
+    expect(markdown).not.toContain('— `pipe|name`')
+  })
+
+  it('escapes angle brackets in Mermaid labels', () => {
+    const { model, analysis } = reportFor(`services:
+  'web<edge>':
+    image: alpine:3.20
+`)
+    const mermaid = toMermaid(model, analysis.findings)
+    expect(mermaid).toContain('web&lt;edge&gt;')
+    expect(mermaid).not.toContain('web<edge>')
+  })
+
   it('writes a stable JSON report without exposing environment values', () => {
     const { model, analysis } = reportFor(`services:
   app:

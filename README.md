@@ -165,7 +165,7 @@ docs/               Screenshot used by this README
 ```bash
 npm install
 npm run dev          # Vite dev server
-npm test             # 34 Vitest unit tests
+npm test             # 37 Vitest unit tests
 npm run typecheck    # strict TypeScript, no emit
 npm run build        # production build
 npm run check        # all of the above

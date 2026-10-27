@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { analyzeCompose } from './analyze'
+import { toMermaid } from './export'
 import { buildGraph, NODE_HEIGHT, NODE_WIDTH } from './layout'
 import { parseCompose } from './parse-compose'
 
@@ -93,5 +94,24 @@ describe('buildGraph', () => {
 `)
     expect(graph.nodes).toHaveLength(2)
     expect(graph.edges).toHaveLength(2)
+  })
+
+  it('deduplicates repeated depends_on entries', () => {
+    const source = `services:
+  web:
+    image: nginx:1.27-alpine
+    depends_on: [api, api]
+  api:
+    image: node:22-alpine
+`
+    const graph = graphFor(source)
+    expect(graph.edges.map((edge) => edge.id)).toEqual(['web->api'])
+
+    const { model } = parseCompose(source)
+    const analysis = analyzeCompose(model!)
+    const edgeLines = toMermaid(model!, analysis.findings)
+      .split('\n')
+      .filter((line) => line.includes('-->|needs|'))
+    expect(edgeLines).toEqual(['  s_0 -->|needs| s_1'])
   })
 })
