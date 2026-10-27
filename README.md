@@ -51,7 +51,7 @@ npm test
 npm run typecheck
 ```
 
-A live demo is published at **<https://hix-pro.github.io/compose-map/>** when the Pages workflow is enabled.
+A live demo is published at **<https://hix-pro.github.io/compose-map/>**.
 
 ## Using it
 
