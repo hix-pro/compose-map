@@ -188,6 +188,8 @@ The rule engine and exporters are pure functions with unit tests; the UI only ha
 
 _Part of the **[hix tools](https://github.com/hix-pro#readme)** suite — local-first, no backend, CI-ready._
 
+**Deep dive:** [Docker Compose red flags before you deploy](https://hix-pro.github.io/blog/posts/05-compose-map-red-flags.html)
+
 ## License
 
 [MIT](LICENSE) © hix-pro
