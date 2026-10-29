@@ -12,6 +12,7 @@ import { Header } from './components/Header'
 import { SourcePanel } from './components/SourcePanel'
 import { GraphPanel } from './components/GraphPanel'
 import { FindingsPanel } from './components/FindingsPanel'
+import { CompareDialog } from './components/CompareDialog'
 import { analyzeCompose } from './lib/analyze'
 import { parseCompose } from './lib/parse-compose'
 import { defaultSample, findSample, type ComposeSample } from './lib/samples'
@@ -69,6 +70,7 @@ export default function App() {
   const [selectedService, setSelectedService] = useState<string | null>(null)
   const [toast, setToast] = useState<Toast | null>(null)
   const [dragging, setDragging] = useState(false)
+  const [compareOpen, setCompareOpen] = useState(false)
   const dragDepth = useRef(0)
 
   const notify = useCallback((message: string, tone: 'ok' | 'error' = 'ok') => {
@@ -195,6 +197,7 @@ export default function App() {
           onLoadSample={loadSample}
           onLoadFile={(file) => void loadFile(file)}
           onReset={resetSample}
+          onCompare={() => setCompareOpen(true)}
         />
 
         <GraphPanel
@@ -217,6 +220,14 @@ export default function App() {
           />
         </div>
       </main>
+
+      {compareOpen && (
+        <CompareDialog
+          source={source}
+          filename={filename}
+          onClose={() => setCompareOpen(false)}
+        />
+      )}
 
       {toast && (
         <div

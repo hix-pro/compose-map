@@ -20,6 +20,7 @@ Everything runs in the browser. There is no backend, no account, and no upload.
 
 - **Service graph** — services, `depends_on` edges, and severity indicators, laid out with Dagre and rendered with React Flow.
 - **Review panel** — 14 rules for images, secrets, host access, networking, healthchecks, restart policies, and dependency mistakes.
+- **Compare revisions** — paste an old and a new Compose file to see services added, removed, or changed, plus the findings each revision introduces or resolves. Accepts normalized `docker compose config` output.
 - **Service inspector** — click a node to see ports, volumes, environment **keys** (values are hidden), networks, dependencies, and that service's findings.
 - **Focus and filter** — narrow the review to one service or one severity.
 - **Local-only editing** — paste, drop, or open a file. It never leaves the tab.
@@ -59,8 +60,9 @@ A live demo is published at **<https://hix-pro.github.io/compose-map/>**.
 1. Paste your file into the editor, drag a `.yml`/`.yaml` file anywhere onto the page, or click **Open file**.
 2. Read the graph. An edge points from a service to something it waits for.
 3. Work through the review. Each finding includes a concrete fix.
-4. Click a node for its full configuration summary.
-5. Export a report or a Mermaid diagram for your team.
+4. Click **Compare** to paste the previous and proposed revisions and see the structural and risk delta.
+5. Click a node for its full configuration summary.
+6. Export a report or a Mermaid diagram for your team.
 
 The editor remembers the last file in `localStorage` so a refresh does not lose your work. Use **Reset sample** to get back to a known fixture. Clear site data to remove the saved copy.
 
@@ -128,6 +130,8 @@ Graph canvas      Review panel
     └─ src/lib/export.ts           Mermaid / Markdown / SVG / PNG / JSON
 ```
 
+`src/lib/diff.ts` compares two `ComposeModel`s and their `Analysis` results for the compare dialog. It reuses the same parser and rules, so the delta matches what each revision would show on its own.
+
 The parser accepts short and long port/volume syntax, environment maps and lists, `env_file`, map or list `depends_on`, and disabled healthchecks. YAML is parsed with [`yaml`](https://eemeli.org/yaml/); anchors and merge keys are handled by the YAML implementation, not by custom code.
 
 ## Project layout
@@ -138,6 +142,7 @@ src/
   lib/
     parse-compose.ts
     analyze.ts
+    diff.ts
     layout.ts
     export.ts
     samples.ts
@@ -165,7 +170,7 @@ docs/               Screenshot used by this README
 ```bash
 npm install
 npm run dev          # Vite dev server
-npm test             # 37 Vitest unit tests
+npm test             # 46 Vitest unit tests
 npm run typecheck    # strict TypeScript, no emit
 npm run build        # production build
 npm run check        # all of the above
@@ -182,6 +187,8 @@ The rule engine and exporters are pure functions with unit tests; the UI only ha
 | [API Watch](https://github.com/hix-pro/api-watch) | catch breaking changes in your OpenAPI and JSON contracts |
 | [RepoRace](https://github.com/hix-pro/reporace) | see which GitHub repositories are accelerating |
 | [TypeShift](https://github.com/hix-pro/typeshift) | decide the semver bump from a TypeScript declaration diff |
+| [LockLens](https://github.com/hix-pro/locklens) | review lockfile and dependency risk before it ships |
+| [PlanGuard](https://github.com/hix-pro/planguard) | catch dangerous Terraform plan changes before apply |
 | [ActionLens](https://github.com/hix-pro/action-lens) | see what a GitHub Actions workflow really does, before it hits main |
 | [OpenCode Telegram](https://github.com/hix-pro/opencode-telegram) | control a local OpenCode server from Telegram |
 ---

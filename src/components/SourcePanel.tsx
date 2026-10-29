@@ -1,6 +1,7 @@
 import {
   FileCode2,
   FileUp,
+  GitCompareArrows,
   Layers3,
   LockKeyhole,
   Network,
@@ -23,6 +24,7 @@ interface SourcePanelProps {
   onLoadSample: (sample: ComposeSample) => void
   onLoadFile: (file: File) => void
   onReset: () => void
+  onCompare: () => void
 }
 
 function Stat({
@@ -65,6 +67,7 @@ export function SourcePanel({
   onLoadSample,
   onLoadFile,
   onReset,
+  onCompare,
 }: SourcePanelProps) {
   const fileInput = useRef<HTMLInputElement>(null)
   const lines = source ? source.split('\n').length : 0
@@ -121,7 +124,15 @@ export function SourcePanel({
           )}
         </div>
 
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={onCompare}
+            className="inline-flex items-center gap-1.5 rounded-md border border-acid/20 bg-acid/[0.05] px-2.5 py-1.5 text-[10.5px] font-medium text-acid/90 transition-colors hover:border-acid/35 hover:bg-acid/[0.09] hover:text-acid"
+          >
+            <GitCompareArrows size={12} strokeWidth={2} />
+            Compare
+          </button>
           <button
             type="button"
             onClick={() => fileInput.current?.click()}

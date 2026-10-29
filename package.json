@@ -1,7 +1,7 @@
 {
   "name": "compose-map",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.2.0",
   "type": "module",
   "description": "Understand your Docker Compose stack at a glance: service graph, ports, volumes, and production risks.",
   "license": "MIT",
